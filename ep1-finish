@@ -97,6 +97,13 @@ for f in "$MEDIA_DIR/$RAW_DIR/*.aif"; do
     echo "processing $name..."
     ffmpeg -y \
         -i "$f" \
-        -af "adelay=$PAD_START|$PAD_START,apad=pad_dur=$PAD_END" 
+        -af "adelay=$PAD_START|$PAD_START,apad=pad_dur=$PAD_END" \ 
+        -metadata artist="$ARTIST" \
+        -metadata album="$ALBUM" \
+        -metadata year="$YEAR" \
+        -metadata title="$name" \
+        -metadata genre="${genres[$name]}" \
+        -metadata comment="${comments[$name]}" \
+        -metadata track="${track_nums[$name]}/$NUM_TRACKS"
 done
 
