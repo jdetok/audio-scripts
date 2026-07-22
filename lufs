@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ $# -eq 0 ]; then
+    echo "Usage: $(basename "$0") <song-name-or-pattern>"
+    exit 1
+fi
+
+ffmpeg -i "$1" -af ebur128 -f null - 2>&1 | sed -n '/Summary/,$p'

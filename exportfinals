@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+FROMDIR="/Users/jdeto/ableton/masters/ep1/padded"
+TODIR="/Users/jdeto/Documents/export/aif/ep1/ep1_masters_$(date '+%m%d%y_%H%M%S')"
+
+cp -r "$FROMDIR" "$TODIR"
+echo "copied $FROMDIR to $TODIR"
