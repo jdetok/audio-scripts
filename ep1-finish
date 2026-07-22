@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+declare -a songs=(
+    Zeroth
+    RGM
+    Surge
+    Verso
+    Interlude
+    Postal
+    Transient
+    Question
+) 
+
+NUM_TRACKS="${#songs[@]}"
+
+declare -A track_nums=()
+declare -A genres=()
+declare -A comments=()
+
+# derive track numbers from the songs array
+for i in "${!songs[@]}"; do
+    song="${songs[$i]}"
+    echo "idx: $i | song: $song"
+    
+    track_nums["$song"]=$((i + 1))
+    
+    genre=''
+    comment=''
+    case "$song" in 
+        Zeroth)
+            genre="Indietronica, Indie Pop"
+            comment=""
+            ;;
+        RGM)
+            genre="Ambient, Experimental Guitar"
+            comment="untitled 001"
+            ;;
+        Surge)
+            genre="Indietronica, Experimental Guitar"
+            comment="untitled 005"
+            ;;
+        Verso)
+            genre="Indietronica, Experimental Guitar"
+            comment="untitled 004/018"
+            ;;
+        Interlude)
+            genre="Ambient, IDM"
+            comment=""
+            ;;
+        Postal)
+            genre="Electronica, Indietronica"
+            comment="march"
+            ;;
+        Transient)
+            genre="Electronica, IDM"
+            comment="transcend"
+            ;;
+        Question)
+            genre="Electronica, Indietronica"
+            comment="untitled question mark / 026"
+            ;;
+    esac
+    ${genres[$name]}="$genre"
+    ${comments[$name]}="$comment"
+
+done
+
+for key in "${!track_nums[@]}"; do
+    echo "$key"
+done
+
+# song: RGM | genre: Ambient, Experimental Guitar
+# song: Postal | genre: Electronica, Indietronica
+# song: Interlude | genre: Ambient, IDM
+# song: Surge | genre: Indietronica, Experimental Guitar
+# song: Question | genre: Electronica, Indietronica
+# song: Transient | genre: Electronica, IDM
+# song: Zeroth | genre: Indietronica, Indie Pop
+# song: Verso | genre: Indietronica, Experimental Guitar
+# song: RGM | comment: untitled 001
+# song: Postal | comment: march
+# song: Interlude | comment:
+# song: Surge | comment: untitled 005
+# song: Question | comment: untitled question mark, untitled 026
+# song: Transient | comment: transcend
+# song: Zeroth | comment:
+# song: Verso | comment: unitled 018 / 004
