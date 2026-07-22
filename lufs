@@ -5,4 +5,6 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-ffmpeg -i "$1" -af ebur128 -f null - 2>&1 | sed -n '/Summary/,$p'
+file="$1"
+echo "Loudness (LUFS): $(basename "$file")"
+ffmpeg -i "$file" -af ebur128 -f null - 2>&1 | sed -n '/Summary/,$p'

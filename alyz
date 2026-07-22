@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+if [[ $# == 0 ]]; then
+    echo "$0 usage:  $(basename "$0") <song-name-or-pattern>"
+    exit 1
+fi
+
+file="$1"
+SMRY=
+
+lufs() {
+    echo "Loudness (LUFS): $(basename "$file")"
+    ffmpeg -i "$file" -af ebur128 -f null - 2>&1 \
+        | sed -n '/Summary/,/^\[out#/{ /^\[out#/q; /Summary/d; p; }' 
+    echo -e "\n"
+}
+
+vol() {
+    echo "Volume data: $(basename "$file")"
+    ffmpeg -i "$file" -af volumedetect -f null - 2>&1 \
+        | grep '^\[Parsed_volumedetect' \
+        | sed 's/^\[Parsed_volumedetect_[^]]*\] //' \
+        | sed "s/^/$(printf '%*s' 4 '')/" # four spaces in front of each line 
+}
+
+lufs $file
+vol $file
