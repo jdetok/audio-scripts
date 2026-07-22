@@ -1,12 +1,13 @@
 #!/usr/bin/env bash
 
-MEDIA_DIR='Users/jdeto/ableton/masters/ep1'
+MEDIA_DIR='/Users/jdeto/ableton/masters/ep1'
+ONEDRIVE="/Users/jdeto/Documents/export/aif/ep1/ep1_masters_$(date '+%m%d%y_%H%M%S')"
 RAW_DIR='raw'
 OUT_DIR='exp'
 IMAGE_FILE='ep1_artwork.png'
 
-PAD_START=500
-PAD_END='0.5'
+PAD_START=1000
+PAD_END=1
 
 ARTIST='Justin DeKock'
 ALBUM='ep1'
@@ -73,8 +74,8 @@ for i in "${!songs[@]}"; do
             comment="untitled question mark / 026"
             ;;
     esac
-    ${genres[$name]}="$genre"
-    ${comments[$name]}="$comment"
+    genres[$song]="$genre"
+    comments[$song]="$comment"
 
 done
 
@@ -92,18 +93,36 @@ done
 
 mkdir -p "$MEDIA_DIR/$OUT_DIR"
 
-for f in "$MEDIA_DIR/$RAW_DIR/*.aif"; do
-    name="${f%.aif}"
-    echo "processing $name..."
+for f in "$MEDIA_DIR/$RAW_DIR"/*.aif; do
+    name="$(basename "${f%.aif}")"
+    echo "adding "$PAD_START"ms at the beginning and "$PAD_END"s at the end of $name..."
     ffmpeg -y \
         -i "$f" \
-        -af "adelay=$PAD_START|$PAD_START,apad=pad_dur=$PAD_END" \ 
-        -metadata artist="$ARTIST" \
-        -metadata album="$ALBUM" \
-        -metadata year="$YEAR" \
-        -metadata title="$name" \
-        -metadata genre="${genres[$name]}" \
-        -metadata comment="${comments[$name]}" \
-        -metadata track="${track_nums[$name]}/$NUM_TRACKS"
+        -af "adelay=$PAD_START|$PAD_START,apad=pad_dur=$PAD_END" \
+        "$MEDIA_DIR/$OUT_DIR/$name".aif
+
+
+    echo "tagging and attaching $IMAGE_FILE to $name".aif...
+    kid3-cli \
+        -c "set picture:'$MEDIA_DIR/$IMAGE_FILE' 'Front Cover'" \
+        -c "set artist '$ARTIST'" \
+        -c "set album '$ALBUM'" \
+        -c "set year '$YEAR'" \
+        -c "set title '$name'" \
+        -c "set genre '${genres[$name]}'" \
+        -c "set comment '${comments[$name]}'" \
+        -c "set track '${track_nums[$name]}/$NUM_TRACKS'" \
+        "$MEDIA_DIR/$OUT_DIR/$name.aif"
 done
 
+PLAYLIST="$MEDIA_DIR/$OUT_DIR/ep1.m3u"
+{
+    echo "#EXTM3U"
+    for song in "${songs[@]}"; do
+        echo "${song}.aif"
+    done
+} > "$PLAYLIST"
+
+# copy files to onedrive location
+cp -r "$MEDIA_DIR/$OUT_DIR" "$ONEDRIVE"
+echo "copied completed files to $ONEDRIVE"

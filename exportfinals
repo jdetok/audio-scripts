@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-FROMDIR="/Users/jdeto/ableton/masters/ep1/padded"
+FROMDIR="/Users/jdeto/ableton/masters/ep1/exp"
 TODIR="/Users/jdeto/Documents/export/aif/ep1/ep1_masters_$(date '+%m%d%y_%H%M%S')"
 
 cp -r "$FROMDIR" "$TODIR"
