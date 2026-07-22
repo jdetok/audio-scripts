@@ -1,4 +1,18 @@
 #!/usr/bin/env bash
+
+MEDIA_DIR='Users/jdeto/ableton/masters/ep1'
+RAW_DIR='raw'
+OUT_DIR='exp'
+IMAGE_FILE='ep1_artwork.png'
+
+PAD_START=500
+PAD_END='0.5'
+
+ARTIST='Justin DeKock'
+ALBUM='ep1'
+YEAR='2026'
+
+# track numbers derived from order of this array
 declare -a songs=(
     Zeroth
     RGM
@@ -65,22 +79,24 @@ for i in "${!songs[@]}"; do
 done
 
 for key in "${!track_nums[@]}"; do
-    echo "$key"
+    echo "song: $key | track: ${track_nums[$key]}"
 done
 
-# song: RGM | genre: Ambient, Experimental Guitar
-# song: Postal | genre: Electronica, Indietronica
-# song: Interlude | genre: Ambient, IDM
-# song: Surge | genre: Indietronica, Experimental Guitar
-# song: Question | genre: Electronica, Indietronica
-# song: Transient | genre: Electronica, IDM
-# song: Zeroth | genre: Indietronica, Indie Pop
-# song: Verso | genre: Indietronica, Experimental Guitar
-# song: RGM | comment: untitled 001
-# song: Postal | comment: march
-# song: Interlude | comment:
-# song: Surge | comment: untitled 005
-# song: Question | comment: untitled question mark, untitled 026
-# song: Transient | comment: transcend
-# song: Zeroth | comment:
-# song: Verso | comment: unitled 018 / 004
+for key in "${!genres[@]}"; do
+    echo "song: $key | genre: ${genres[$key]}"
+done
+
+for key in "${!comments[@]}"; do
+    echo "song: $key | comment: ${comments[$key]}"
+done
+
+mkdir -p "$MEDIA_DIR/$OUT_DIR"
+
+for f in "$MEDIA_DIR/$RAW_DIR/*.aif"; do
+    name="${f%.aif}"
+    echo "processing $name..."
+    ffmpeg -y \
+        -i "$f" \
+        -af "adelay=$PAD_START|$PAD_START,apad=pad_dur=$PAD_END" 
+done
+
