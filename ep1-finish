@@ -6,8 +6,8 @@ RAW_DIR='raw'
 OUT_DIR='exp'
 IMAGE_FILE='ep1_artwork.png'
 
-PAD_START=1000
-PAD_END=1
+PAD_START=500
+PAD_END='0.75'
 
 ARTIST='Justin DeKock'
 ALBUM='ep1'
@@ -22,7 +22,7 @@ declare -a songs=(
     Interlude
     Postal
     Transient
-    Question
+    Epilogue
 ) 
 
 NUM_TRACKS="${#songs[@]}"
@@ -99,6 +99,7 @@ for f in "$MEDIA_DIR/$RAW_DIR"/*.aif; do
     ffmpeg -y \
         -i "$f" \
         -af "adelay=$PAD_START|$PAD_START,apad=pad_dur=$PAD_END" \
+        -c:a pcm_s24be \
         "$MEDIA_DIR/$OUT_DIR/$name".aif
 
 

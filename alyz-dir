@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if [[ "$#" == 0 ]]; then
+    echo "$0 usage: pass a directory"
+fi
+
+dir="$1"
+
+for f in "$dir"/*.aif; do
+    echo -e "$f:\n$(./alyz "$f" | sed -n '/I:/p')"
+done
+
